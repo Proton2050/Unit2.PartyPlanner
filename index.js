@@ -40,8 +40,14 @@ function renderParties() {
         <p>${party.description}</p>
         <h4>${party.date}</h4>
         <h4>${party.location}</h4>
-        <button>Delete</button>
         `;
+
+        // Add button to delete party
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete Party';
+        li.append(deleteButton);
+        deleteButton.addEventListener('click', () => deleteParty(party.id));
+
         return li;
     });
 
@@ -81,5 +87,22 @@ async function addParty(event) {
         render();
     } catch (error) {
         console.error(error);
+    }
+}
+
+// Create delete party function
+async function deleteParty(id) {
+    try {
+        const response = await fetch(`${API_URL}/${id}`, {
+            method: 'DELETE',
+        });
+
+        if (!response.ok) {
+            throw new Error('Party could not be deleted.');
+        }
+
+        render();
+    } catch (error) {
+        console.log(error);
     }
 }
