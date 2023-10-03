@@ -38,8 +38,48 @@ function renderParties() {
         li.innerHTML = `
         <h2>${party.name}</h2>
         <p>${party.description}</p>
-        <h6>${party.date}</h6>
-        <h6>${party.location}`
-    })
+        <h4>${party.date}</h4>
+        <h4>${party.location}</h4>
+        <button>Delete</button>
+        `;
+        return li;
+    });
+
+    partyList.replaceChildren(...partyCards);
 }
 
+// Ask API to create a new party based on form data
+async function addParty(event) {
+    event.preventDefault();
+
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: name,
+                description: description,
+                date: date,
+                location: location,
+            }),
+        });
+        addPartyForm.name.value = '';
+        addPartyForm.description.value = '';
+        addPartyForm.date.value = '';
+        addPartyForm.location.value = '';
+
+
+        let result = await response.json();
+        console.log(result);
+        if (result.success) {
+            console.log("added party successfully");
+            // throw new Error('Failed to create party');
+        } else {
+            console.log('failed to add party');
+        }
+
+        render();
+    } catch (error) {
+        console.error(error);
+    }
+}
